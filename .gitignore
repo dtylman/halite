@@ -45,3 +45,5 @@ CTestTestfile.cmake
 
 *.log
 replay*
+
+*.zip

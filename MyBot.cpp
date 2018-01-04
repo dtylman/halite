@@ -1,5 +1,6 @@
 #include "hlt/hlt.hpp"
 #include "hlt/navigation.hpp"
+#include "Slower.h"
 
 int main() {
     const hlt::Metadata metadata = hlt::initialize("IvanTheTerrible");
@@ -7,7 +8,11 @@ int main() {
 
     const hlt::Map& initial_map = metadata.initial_map;
 
-    // We now have 1 full minute to analyse the initial map.
+       
+    Slower s;
+
+    
+    // We now have 1 full minute to analyze the initial map.
     std::ostringstream initial_map_intelligence;
     initial_map_intelligence
             << "width: " << initial_map.map_width
@@ -21,12 +26,12 @@ int main() {
     for (;;) {
         moves.clear();
         const hlt::Map map = hlt::in::get_map();
-
+        
         for (const hlt::Ship& ship : map.ships.at(player_id)) {
             if (ship.docking_status != hlt::ShipDockingStatus::Undocked) {
                 continue;
             }
-                                  
+
             for (const hlt::Planet& planet : map.planets) {
                 if (planet.owned) {
                     continue;
@@ -36,7 +41,7 @@ int main() {
                     moves.push_back(hlt::Move::dock(ship.entity_id, planet.entity_id));
                     break;
                 }
-                                
+
                 const hlt::possibly<hlt::Move> move =
                         hlt::navigation::navigate_ship_to_dock(map, ship, planet, hlt::constants::MAX_SPEED);
                 if (move.second) {
