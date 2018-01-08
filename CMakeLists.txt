@@ -18,6 +18,6 @@ foreach(dir ${dirs})
 endforeach()
 
 include_directories(${CMAKE_SOURCE_DIR})
-set(SOURCE_FILES "${SOURCE_FILES}" MyBot.cpp Slower.cpp)
+set(SOURCE_FILES "${SOURCE_FILES}" MyBot.cpp Docker.cpp Dodger.cpp Killer.cpp Ship.cpp MyShips.cpp Kof.cpp) 
 
 add_executable(MyBot ${SOURCE_FILES})

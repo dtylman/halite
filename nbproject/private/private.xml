@@ -12,9 +12,13 @@
         <group>
             <file>file:/home/danny/src/halite/hlt/move.hpp</file>
             <file>file:/home/danny/src/halite/CMakeLists.txt</file>
+            <file>file:/home/danny/src/halite/Dodger.h</file>
+            <file>file:/home/danny/src/halite/Killer.h</file>
+            <file>file:/home/danny/src/halite/Docker.cpp</file>
             <file>file:/home/danny/src/halite/MyBot.cpp</file>
-            <file>file:/home/danny/src/halite/Slower.h</file>
-            <file>file:/home/danny/src/halite/Slower.cpp</file>
+            <file>file:/home/danny/src/halite/Dodger.cpp</file>
+            <file>file:/home/danny/src/halite/Killer.cpp</file>
+            <file>file:/home/danny/src/halite/Docker.h</file>
         </group>
     </open-files>
 </project-private>

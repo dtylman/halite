@@ -39,4 +39,6 @@ namespace hlt {
             return { MoveType::Thrust, ship_id, thrust, util::angle_rad_to_deg_clipped(angle_rad), 0};
         }
     };
+    
+    typedef std::vector<Move> Moves;
 }

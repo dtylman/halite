@@ -1,17 +1,17 @@
 #include "hlt/hlt.hpp"
 #include "hlt/navigation.hpp"
-#include "Slower.h"
+#include "Ship.h"
+#include "MyShips.h"
+
+#define BOT_NAME "shablool"
 
 int main() {
-    const hlt::Metadata metadata = hlt::initialize("IvanTheTerrible");
+    const hlt::Metadata metadata = hlt::initialize(BOT_NAME);
+
     const hlt::PlayerId player_id = metadata.player_id;
 
     const hlt::Map& initial_map = metadata.initial_map;
 
-       
-    Slower s;
-
-    
     // We now have 1 full minute to analyze the initial map.
     std::ostringstream initial_map_intelligence;
     initial_map_intelligence
@@ -21,36 +21,15 @@ int main() {
             << "; my ships: " << initial_map.ship_map.at(player_id).size()
             << "; planets: " << initial_map.planets.size();
     hlt::Log::log(initial_map_intelligence.str());
-
-    std::vector<hlt::Move> moves;
+   
+    hlt::Moves moves;
+    MyShips ships(metadata);
+    
     for (;;) {
         moves.clear();
-        const hlt::Map map = hlt::in::get_map();
-        
-        for (const hlt::Ship& ship : map.ships.at(player_id)) {
-            if (ship.docking_status != hlt::ShipDockingStatus::Undocked) {
-                continue;
-            }
-
-            for (const hlt::Planet& planet : map.planets) {
-                if (planet.owned) {
-                    continue;
-                }
-
-                if (ship.can_dock(planet)) {
-                    moves.push_back(hlt::Move::dock(ship.entity_id, planet.entity_id));
-                    break;
-                }
-
-                const hlt::possibly<hlt::Move> move =
-                        hlt::navigation::navigate_ship_to_dock(map, ship, planet, hlt::constants::MAX_SPEED);
-                if (move.second) {
-                    moves.push_back(move.first);
-                }
-
-                break;
-            }
-        }
+        const hlt::Map map = hlt::in::get_map();        
+        ships.populate(map);        
+        ships.play(map, moves);        
 
         if (!hlt::out::send_moves(moves)) {
             hlt::Log::log("send_moves failed; exiting");
