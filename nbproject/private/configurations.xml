@@ -51,10 +51,10 @@
       <in>Kof.cpp</in>
       <in>Kof.h</in>
       <in>MyBot.cpp</in>
-      <in>MyShips.cpp</in>
-      <in>MyShips.h</in>
-      <in>Ship.cpp</in>
-      <in>Ship.h</in>
+      <in>MyPilots.cpp</in>
+      <in>MyPilots.h</in>
+      <in>Pilot.cpp</in>
+      <in>Pilot.h</in>
       <in>Vector2.h</in>
     </df>
   </logicalFolder>
@@ -87,6 +87,7 @@
         </gdb_signals>
         <gdb_options>
           <DebugOptions>
+            <option name="debug_command" value="./MyBot"/>
           </DebugOptions>
         </gdb_options>
         <gdb_buildfirst gdb_buildfirst_overriden="false" gdb_buildfirst_old="false"/>

@@ -10,13 +10,15 @@
 #ifndef KILLER_H
 #define KILLER_H
 
-#include "Ship.h"
+#include "Pilot.h"
 
 
-class Killer : public Ship {
+class Killer : public Pilot {
 public:
     Killer(const hlt::Ship& hltShip);
     virtual ~Killer();
+    void play(const hlt::Map& map, hlt::Moves& moves) override;
+
 private:
 
 };

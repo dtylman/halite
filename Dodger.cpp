@@ -7,7 +7,7 @@
 
 #include "Dodger.h"
 
-Dodger::Dodger(const hlt::Ship& hltShip) : Ship(hltShip){
+Dodger::Dodger(const hlt::Ship& hltShip) : Pilot(hltShip){
 
 }
 

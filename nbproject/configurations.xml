@@ -13,9 +13,9 @@
       <in>Kof.cpp</in>
       <in>Kof.h</in>
       <in>MyBot.cpp</in>
-      <in>MyShips.cpp</in>
-      <in>MyShips.h</in>
-      <in>Ship.cpp</in>
+      <in>MyPilots.cpp</in>
+      <in>MyPilots.h</in>
+      <in>Pilot.cpp</in>
     </df>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -82,11 +82,11 @@
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="MyShips.cpp" ex="false" tool="1" flavor2="0">
+      <item path="MyPilots.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="MyShips.h" ex="false" tool="3" flavor2="0">
+      <item path="MyPilots.h" ex="false" tool="3" flavor2="0">
       </item>
-      <item path="Ship.cpp" ex="false" tool="1" flavor2="11">
+      <item path="Pilot.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="1">
         </ccTool>
       </item>

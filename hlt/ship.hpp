@@ -30,5 +30,10 @@ namespace hlt {
         bool can_dock(const Planet& planet) const {
             return location.get_distance_to(planet.location) <= (constants::SHIP_RADIUS + constants::DOCK_RADIUS + planet.radius);
         }
+       
+        /// return true if ship is doing some kind of docking or undocking
+        bool in_docking_process() const {
+            return docking_status!=ShipDockingStatus::Undocked;
+        }
     };
 }

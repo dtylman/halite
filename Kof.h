@@ -8,10 +8,10 @@
 #ifndef KOF_H
 #define KOF_H
 
-#include "Ship.h"
+#include "Pilot.h"
 
 
-class Kof : public Ship {
+class Kof : public Pilot {
 public:
     Kof(const hlt::Ship& hltShip);    
     virtual ~Kof();

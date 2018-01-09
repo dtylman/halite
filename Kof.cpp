@@ -7,8 +7,10 @@
 
 #include "Kof.h"
 #include "hlt/navigation.hpp"
+#include "log.hpp"
 
-Kof::Kof(const hlt::Ship& hltShip) : Ship(hltShip) {
+Kof::Kof(const hlt::Ship& hltShip) : Pilot(hltShip) {
+    hlt::Log::log("created kof pilot");
 
 }
 
@@ -16,25 +18,9 @@ Kof::~Kof() {
 }
 
 void Kof::play(const hlt::Map& map, hlt::Moves& moves) {
-    if (_halite_ship.docking_status != hlt::ShipDockingStatus::Undocked) {
+    if (_ship.in_docking_process()) {
         return;
     }
 
-    for (const hlt::Planet& planet : map.planets) {
-        if (planet.owned) {
-            continue;
-        }
-
-        if (_halite_ship.can_dock(planet)) {
-            moves.push_back(hlt::Move::dock(_halite_ship.entity_id, planet.entity_id));
-            return;
-        }
-
-        const hlt::possibly<hlt::Move> move =
-                hlt::navigation::navigate_ship_to_dock(map, _halite_ship, planet, hlt::constants::MAX_SPEED);
-        if (move.second) {
-            moves.push_back(move.first);
-            return;
-        }
-    }
+    move_to_dock(map, moves);
 }

@@ -8,10 +8,10 @@
 #ifndef DODGER_H
 #define DODGER_H
 
-#include "Ship.h"
+#include "Pilot.h"
 
 
-class Dodger : public Ship {
+class Dodger : public Pilot {
 public:
     Dodger(const hlt::Ship& hltShip);
     virtual ~Dodger();

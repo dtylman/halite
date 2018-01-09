@@ -5,7 +5,7 @@
 #include "constants.hpp"
 #include "util.hpp"
 
-namespace hlt {
+namespace hlt {      
     struct Location {
         double pos_x, pos_y;
 
@@ -35,11 +35,17 @@ namespace hlt {
 
             return { x, y };
         }
-
-        friend std::ostream& operator<<(std::ostream& out, const Location& location);
+        
+        bool empty() const {
+            return (pos_x<0) && (pos_y<0);
+        }
+        
+        friend std::ostream& operator<<(std::ostream& out, const Location& location);        
     };
 
     static bool operator==(const Location& l1, const Location& l2) {
         return l1.pos_x == l2.pos_x && l1.pos_y == l2.pos_y;
-    }
+    }    
+        
+    const Location EmptyLocation { -1, -1 };
 }

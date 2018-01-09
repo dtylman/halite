@@ -1,4 +1,4 @@
 #!/bin/sh
 
 rm mybot.zip
-zip mybot.zip MyBot.cpp hlt/* Makefile CMakeLists.txt
+zip mybot.zip *.h *.cpp hlt/* Makefile CMakeLists.txt
