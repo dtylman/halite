@@ -7,7 +7,6 @@
  */
 
 #include "Pilot.h"
-#include "Vector2.h"
 #include "hlt/navigation.hpp"
 #include "MyPilots.h"
 #include <climits>

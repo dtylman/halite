@@ -7,6 +7,17 @@
         <in>location.cpp</in>
         <in>map.cpp</in>
       </df>
+      <in>Docker.cpp</in>
+      <in>Dodger.cpp</in>
+      <in>Killer.cpp</in>
+      <in>Kof.cpp</in>
+      <in>Kof.h</in>
+      <in>MyBot.cpp</in>
+      <in>MyPilots.cpp</in>
+      <in>MyPilots.h</in>
+      <in>MyShips.cpp</in>
+      <in>MyShips.h</in>
+      <in>Pilot.cpp</in>
     </df>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -31,6 +42,7 @@
       </toolsSet>
       <flagsDictionary>
         <element flagsID="0" commonFlags="-O2 -pedantic -std=c++11"/>
+        <element flagsID="1" commonFlags="-std=c++14"/>
       </flagsDictionary>
       <codeAssistance>
       </codeAssistance>
@@ -52,6 +64,38 @@
           <preBuildCommand>${CMAKE} -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_COMPILER=${IDE_CC} -DCMAKE_CXX_COMPILER=${IDE_CXX} -DCMAKE_C_FLAGS_DEBUG="-g3 -gdwarf-2" -DCMAKE_CXX_FLAGS_DEBUG="-g3 -gdwarf-2" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON .</preBuildCommand>
         </preBuild>
       </makefileType>
+      <item path="Docker.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="Dodger.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="Killer.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="Kof.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="Kof.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="MyBot.cpp" ex="false" tool="1" flavor2="8">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="MyPilots.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="MyPilots.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="MyShips.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="MyShips.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="Pilot.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="1">
+        </ccTool>
+      </item>
       <folder path="0">
         <ccTool>
           <standard>11</standard>
