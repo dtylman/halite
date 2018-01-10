@@ -13,9 +13,8 @@
 
 class EntitySorter {
 public:
-
     enum SortType {
-        Distance, Health
+        DistanceASC, HealthASC, RadiusDSC
     };
     EntitySorter(SortType type, const hlt::Entity& source);
     EntitySorter(SortType type);
@@ -25,6 +24,7 @@ public:
 
     static std::vector<hlt::Planet> planets_by_distance(const hlt::Entity& source, const hlt::Map& map);
     static std::vector<hlt::Planet> planets_by_health(const hlt::Map& map);
+    static std::vector<hlt::Planet> planets_by_radius(const hlt::Map& map);
 private:
     SortType _type;
     hlt::Location _source;
@@ -37,14 +37,17 @@ public:
 
     void populate(const hlt::Map& map);
     void play(const hlt::Map& map, hlt::Moves& moves);
-
+    void analyze_turn(const hlt::Map& map);
+    
 private:
     bool update_ship(const hlt::Ship& ship);
     void create_pilot(const hlt::Ship& ship, const hlt::Map& map);
     bool create_docker_pilot(const hlt::Ship& ship, const hlt::Map& map);
     bool create_dodger_pilot(const hlt::Ship& ship, const hlt::Map& map);
-    bool create_killer_pilot(const hlt::Ship& ship, const hlt::Map& map);
+    bool create_killer_pilot(const hlt::Ship& ship, const hlt::Map& map);    
     void delete_pilot(Pilot* pilot);
+    hlt::possibly<hlt::Planet> best_enemry_planet(const hlt::Map& map);
+    
     /// returns true if entity is targeted by any of our ships
     bool entity_targeted(const hlt::Entity& entity) const;
 

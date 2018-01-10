@@ -25,16 +25,12 @@ void Killer::play(const hlt::Map& map, hlt::Moves& moves) {
     if (!_target.is_alive()){
         const hlt::Ship* enemy_ship = find_nearest_enemy(map);
         if (enemy_ship==NULL){
-            moves.push_back(hlt::Move::noop());
+            stop_moving(moves);
             return;
         }
         _target = *enemy_ship;
     }
     move_to(map,_target.location,moves);    
-}
-
-bool Killer::can_play(const hlt::Map& map) {
-    return true;
 }
 
 

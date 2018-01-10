@@ -21,12 +21,9 @@ void Dodger::play(const hlt::Map& map, hlt::Moves& moves) {
         move_to(map,dodgepoint,moves);
         return;
     }
-    moves.push_back(hlt::Move::noop());
+    stop_moving(moves,false);
 }
 
-bool Dodger::can_play(const hlt::Map& map) {
-    return true;
-}
 
 int Dodger::target_entity_id() const {
     return -1;

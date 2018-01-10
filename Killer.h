@@ -18,7 +18,6 @@ public:
     Killer(const hlt::Ship& ship, const hlt::Entity& target);
     virtual ~Killer();
     void play(const hlt::Map& map, hlt::Moves& moves) override;
-    bool can_play(const hlt::Map& map) override;
     
     int target_entity_id() const override;
 

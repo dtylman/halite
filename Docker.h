@@ -13,11 +13,10 @@
 
 class Docker : public Pilot {
 public:
-    Docker(const hlt::Ship& hltShip, const hlt::Planet& target);
+    Docker(const hlt::Ship& ship, const hlt::Planet& target);
     virtual ~Docker();
     
     void play(const hlt::Map& map, hlt::Moves& moves) override;
-    bool can_play(const hlt::Map& map) override;
     
     int target_entity_id() const override;
 

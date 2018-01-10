@@ -13,7 +13,7 @@
 #include <typeinfo>
 
 Pilot::Pilot(const hlt::Ship& halite_ship) : _ship(halite_ship) {
-
+    _idle = false;
 }
 
 Pilot::~Pilot() {
@@ -64,7 +64,7 @@ const hlt::Planet* Pilot::find_nearest_planet(const hlt::Map& map, bool owned) c
     return nearest_planet;
 }
 
-void Pilot::move_to(const hlt::Map& map, const hlt::Location& location, hlt::Moves& moves) const {
+void Pilot::move_to(const hlt::Map& map, const hlt::Location& location, hlt::Moves& moves)  {
      const hlt::possibly<hlt::Move> move = hlt::navigation::navigate_ship_towards_target(map,
             _ship,location,hlt::constants::MAX_SPEED,true,
             hlt::constants::MAX_NAVIGATION_CORRECTIONS,M_PI / 180.0);
@@ -72,19 +72,22 @@ void Pilot::move_to(const hlt::Map& map, const hlt::Location& location, hlt::Mov
          moves.push_back(move.first);
      }
      //stop 
-    moves.push_back(hlt::Move::noop());
+     stop_moving(moves);
 }
 
-bool Pilot::move_to_dock(const hlt::Map& map, hlt::Moves& moves) const {
+bool Pilot::move_to_dock(const hlt::Map& map, hlt::Moves& moves)  {
     const hlt::Planet* planet = find_nearest_planet(map, false);
     if (planet!=NULL){
+        if (planet->is_full()){
+            return false;
+        }
         if (_ship.can_dock(*planet)){
             moves.push_back(hlt::Move::dock(_ship.entity_id, planet->entity_id));
             return true;
         }
         const double distance = _ship.location.get_distance_to(planet->location);
         int thurst = hlt::constants::MAX_SPEED;
-        if (distance>=thurst){
+        if (distance<=thurst){
             thurst = distance; // avoid collision with planets
         }
         const hlt::possibly<hlt::Move> move =
@@ -101,6 +104,11 @@ void Pilot::log(const std::string& message) {
     hlt::Log::output() << typeid(*this).name() << ", ship " << _ship.entity_id << ": " << message << std::endl;
 }
 
-bool Pilot::has_target() const {
-    return (target_entity_id() >= 0);
+bool Pilot::idle() const {
+    return _idle;
+}
+
+void Pilot::stop_moving(hlt::Moves& moves, bool set_idle) {
+    moves.push_back(hlt::Move::noop());
+    _idle = set_idle;
 }

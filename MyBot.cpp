@@ -35,5 +35,6 @@ int main() {
             hlt::Log::log("send_moves failed; exiting");
             break;
         }
+        MyPilots::instance().analyze_turn(map);
     }
 }

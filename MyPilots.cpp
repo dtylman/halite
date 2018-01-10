@@ -121,6 +121,32 @@ void MyPilots::play(const hlt::Map& map, hlt::Moves& moves) {
     }
 }
 
+hlt::possibly<hlt::Planet> MyPilots::best_enemry_planet(const hlt::Map& map) {
+    std::vector<hlt::Planet> planets = EntitySorter::planets_by_radius(map);
+    for (auto planet : planets) {
+        if ((planet.owned) && (planet.owner_id != _metadata.player_id)) { //not my planet 
+            return {planet, true};
+        }
+    }
+    return {hlt::Planet(), false};
+}
+
+void MyPilots::analyze_turn(const hlt::Map& map) {
+    std::vector<Pilot*> idle_pilots;
+    for (auto pilot : _pilots) {
+        if (pilot->idle()) {
+            idle_pilots.push_back(pilot);
+        }
+    }
+    hlt::possibly<hlt::Planet> planet = best_enemry_planet(map);
+    if (planet.second) {
+        for (auto pilot : idle_pilots) {
+            _pilots.push_back(new Docker(pilot->ship(), planet.first));
+            delete_pilot(pilot);            
+        }
+    }
+}
+
 void MyPilots::init(const hlt::Metadata& metadata) {
     _instance = new MyPilots(metadata);
 }
@@ -138,12 +164,14 @@ EntitySorter::EntitySorter(SortType type, const hlt::Entity& source) : _type(typ
 }
 
 bool EntitySorter::operator()(const hlt::Entity& entity1, const hlt::Entity& entitiy2) {
-    if (_type == Distance) {
+    if (_type == DistanceASC) {
         double distance1 = entity1.location.get_distance_to(_source);
         double distance2 = entitiy2.location.get_distance_to(_source);
         return distance1<distance2;
-    } else if (_type == Health) {
+    } else if (_type == HealthASC) {
         return entity1.health < entitiy2.health;
+    } else if (_type == RadiusDSC) {
+        return entity1.radius > entitiy2.radius;
     } else {
         hlt::Log::log("Warning!! sorting by unknown type!!!");
         return entity1.radius < entitiy2.radius;
@@ -156,13 +184,19 @@ EntitySorter::~EntitySorter() {
 
 std::vector<hlt::Planet> EntitySorter::planets_by_distance(const hlt::Entity& source, const hlt::Map& map) {
     std::vector<hlt::Planet> planets = map.planets;
-    std::sort(planets.begin(), planets.end(), EntitySorter(SortType::Distance, source));
+    std::sort(planets.begin(), planets.end(), EntitySorter(SortType::DistanceASC, source));
     return planets;
 }
 
 std::vector<hlt::Planet> EntitySorter::planets_by_health(const hlt::Map& map) {
     std::vector<hlt::Planet> planets = map.planets;
-    std::sort(planets.begin(), planets.end(), EntitySorter(SortType::Health));
+    std::sort(planets.begin(), planets.end(), EntitySorter(SortType::HealthASC));
+    return planets;
+}
+
+std::vector<hlt::Planet> EntitySorter::planets_by_radius(const hlt::Map& map) {
+    std::vector<hlt::Planet> planets = map.planets;
+    std::sort(planets.begin(), planets.end(), EntitySorter(SortType::RadiusDSC));
     return planets;
 }
 

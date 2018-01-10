@@ -21,17 +21,18 @@ public:
     const hlt::Ship& ship() const;
     
     virtual void play(const hlt::Map& map, hlt::Moves& moves) = 0;    
-    virtual bool can_play(const hlt::Map& map) =0 ;
-    virtual bool has_target() const;    
     virtual int target_entity_id() const =0;
     void update_ship(const hlt::Ship& ship);
+    bool idle() const;
 protected:
     const hlt::Ship* find_nearest_enemy(const hlt::Map& map) const;
     const hlt::Planet* find_nearest_planet(const hlt::Map& map, bool owned) const;    
-    void move_to(const hlt::Map& map, const hlt::Location& location, hlt::Moves& moves) const;
-    bool move_to_dock(const hlt::Map& map, hlt::Moves& moves) const;    
+    void move_to(const hlt::Map& map, const hlt::Location& location, hlt::Moves& moves) ;
+    bool move_to_dock(const hlt::Map& map, hlt::Moves& moves) ;    
+    void stop_moving(hlt::Moves& moves, bool set_idle = true);
     void log(const std::string& message);
     hlt::Ship _ship;       
+    bool _idle;
 };
 
 
