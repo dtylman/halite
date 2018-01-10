@@ -13,7 +13,7 @@
 
 class Dodger : public Pilot {
 public:
-    Dodger(const hlt::Ship& hltShip);
+    Dodger(const hlt::Ship& ship);
     virtual ~Dodger();
     void play(const hlt::Map& map, hlt::Moves& moves) override;
     bool can_play(const hlt::Map& map) override;    

@@ -30,7 +30,7 @@ void Killer::play(const hlt::Map& map, hlt::Moves& moves) {
         }
         _target = *enemy_ship;
     }
-    move_to_crash(map,_target.location,moves);    
+    move_to(map,_target.location,moves);    
 }
 
 bool Killer::can_play(const hlt::Map& map) {

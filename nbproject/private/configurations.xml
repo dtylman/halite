@@ -53,8 +53,6 @@
       <in>MyBot.cpp</in>
       <in>MyPilots.cpp</in>
       <in>MyPilots.h</in>
-      <in>MyShips.cpp</in>
-      <in>MyShips.h</in>
       <in>Pilot.cpp</in>
       <in>Pilot.h</in>
     </df>

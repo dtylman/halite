@@ -64,7 +64,7 @@ const hlt::Planet* Pilot::find_nearest_planet(const hlt::Map& map, bool owned) c
     return nearest_planet;
 }
 
-void Pilot::move_to_crash(const hlt::Map& map, const hlt::Location& location, hlt::Moves& moves) const {
+void Pilot::move_to(const hlt::Map& map, const hlt::Location& location, hlt::Moves& moves) const {
      const hlt::possibly<hlt::Move> move = hlt::navigation::navigate_ship_towards_target(map,
             _ship,location,hlt::constants::MAX_SPEED,true,
             hlt::constants::MAX_NAVIGATION_CORRECTIONS,M_PI / 180.0);
@@ -75,16 +75,13 @@ void Pilot::move_to_crash(const hlt::Map& map, const hlt::Location& location, hl
     moves.push_back(hlt::Move::noop());
 }
 
-void Pilot::move_to_dock(const hlt::Map& map, hlt::Moves& moves) const {
+bool Pilot::move_to_dock(const hlt::Map& map, hlt::Moves& moves) const {
     const hlt::Planet* planet = find_nearest_planet(map, false);
     if (planet!=NULL){
         if (_ship.can_dock(*planet)){
             moves.push_back(hlt::Move::dock(_ship.entity_id, planet->entity_id));
+            return true;
         }
-        return;
-    } 
-    planet = find_nearest_planet(map,false);
-    if (planet!=NULL){
         const double distance = _ship.location.get_distance_to(planet->location);
         int thurst = hlt::constants::MAX_SPEED;
         if (distance>=thurst){
@@ -94,11 +91,10 @@ void Pilot::move_to_dock(const hlt::Map& map, hlt::Moves& moves) const {
                 hlt::navigation::navigate_ship_to_dock(map, _ship, *planet, thurst);
         if (move.second) {
             moves.push_back(move.first);
-            return;
+            return true;
         }
     }
-    //stop 
-    moves.push_back(hlt::Move::noop());
+    return false;    
 }
 
 void Pilot::log(const std::string& message) {

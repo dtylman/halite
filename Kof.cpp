@@ -17,18 +17,23 @@ Kof::~Kof() {
     log("destroyed");
 }
 
-void Kof::play(const hlt::Map& map, hlt::Moves& moves) {
+void Kof::play(const hlt::Map& map, hlt::Moves& moves) {    
     if (_ship.in_docking_process()) {
         return;
     }
-        
-//    const hlt::Ship* target = find_nearest_enemy(map);    
-//    if (target!=NULL){        
-//        move_towards(map,target->location,moves);
-//        return;
-//    } 
-
-    move_to_dock(map, moves);
+    //try to dock nearest planet.
+    if (move_to_dock(map, moves)){
+        return;
+    }
+    //fight enemy ship
+    const hlt::Ship* enemy = find_nearest_enemy(map);
+    if (enemy!=NULL){        
+        hlt::Location near_enemy_ship = _ship.location.get_closest_point(enemy->location,enemy->radius);
+        move_to(map,near_enemy_ship,moves);
+        return;
+    } 
+    // do nothing? 
+    moves.push_back(hlt::Move::noop());    
 }
 
 bool Kof::can_play(const hlt::Map& map) {

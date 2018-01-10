@@ -12,6 +12,7 @@
 #include "Docker.h"
 #include "Kof.h"
 #include "Killer.h"
+#include "Dodger.h"
 
 MyPilots* MyPilots::_instance = NULL;
 
@@ -29,7 +30,7 @@ void MyPilots::populate(const hlt::Map& map) {
             create_pilot(ship, map);
         }
     }
-    
+
     //remove all pilots for destroyed ships:
     std::vector<Pilot*> dead;
     for (auto pilot : _pilots) {
@@ -40,7 +41,7 @@ void MyPilots::populate(const hlt::Map& map) {
     }
     hlt::Log::output() << "found " << dead.size() << " dead pilots " << std::endl;
     for (auto pilot : dead) {
-       delete_pilot(pilot);
+        delete_pilot(pilot);
     }
 }
 
@@ -54,29 +55,68 @@ bool MyPilots::update_ship(const hlt::Ship& ship) {
     return false;
 }
 
-void MyPilots::create_pilot(const hlt::Ship& ship, const hlt::Map& map) {
+bool MyPilots::create_docker_pilot(const hlt::Ship& ship, const hlt::Map& map) {
     std::vector<hlt::Planet> planets = EntitySorter::planets_by_distance(ship, map);
     // add target planet for any planet not owned.       
     for (auto planet : planets) {
         if ((!planet.owned) && (!entity_targeted(planet))) {
             _pilots.push_back(new Docker(ship, planet));
-            return;
-        }
-    }    
-    
-    planets = EntitySorter::planets_by_health(map);
-    for (auto planet : planets){
-        if (planet.owner_id!=_metadata.player_id){
-            _pilots.push_back(new Killer(ship,planet));
-            return;
+            return true;
         }
     }
-    
-    _pilots.push_back(new Kof(ship));    
+    return false;
+}
+
+template<class T>
+unsigned int MyPilots::count_pilots() const {
+    unsigned int count = 0;
+    for (Pilot* pilot : _pilots) {
+        T* p = dynamic_cast<T*> (pilot);
+        if (p != NULL) {
+            count++;
+        }
+    }
+    return count;
+}
+
+bool MyPilots::create_dodger_pilot(const hlt::Ship& ship, const hlt::Map& map) {
+    if (count_pilots<Dodger>() > 0) {
+        return false;
+    }
+    _pilots.push_back(new Dodger(ship));
+    return true;
+}
+
+bool MyPilots::create_killer_pilot(const hlt::Ship& ship, const hlt::Map& map) {
+    if (count_pilots<Killer>() > map.planets.size() * 2) {
+        return false;
+    }
+    std::vector<hlt::Planet> planets = EntitySorter::planets_by_health(map);
+    for (auto planet : planets) {
+        if (planet.owner_id != _metadata.player_id) {
+            _pilots.push_back(new Killer(ship, planet));
+            return true;
+        }
+    }
+    return false;
+}
+
+void MyPilots::create_pilot(const hlt::Ship& ship, const hlt::Map& map) {
+    if (create_docker_pilot(ship, map)) {
+        return;
+    }
+    if (create_dodger_pilot(ship, map)) {
+        return;
+    }
+    if (create_killer_pilot(ship, map)) {
+        return;
+    }
+    // default: create kof pilot
+    _pilots.push_back(new Kof(ship));
 }
 
 void MyPilots::play(const hlt::Map& map, hlt::Moves& moves) {
-    for (auto s : _pilots) {        
+    for (auto s : _pilots) {
         s->play(map, moves);
     }
 }
@@ -127,18 +167,18 @@ std::vector<hlt::Planet> EntitySorter::planets_by_health(const hlt::Map& map) {
 }
 
 bool MyPilots::entity_targeted(const hlt::Entity& entity) const {
-    for (Pilot* pilot : _pilots) {        
+    for (Pilot* pilot : _pilots) {
         Docker* docker = dynamic_cast<Docker*> (pilot);
         if (docker != NULL) {
-            if (docker->target_entity_id() == (int)entity.entity_id) {
+            if (docker->target_entity_id() == (int) entity.entity_id) {
                 return true;
             }
-        }        
+        }
     }
     return false;
 }
 
-void MyPilots::delete_pilot(Pilot* pilot) {    
+void MyPilots::delete_pilot(Pilot* pilot) {
     hlt::Log::output() << "removing pilot " << pilot->ship().entity_id << std::endl;
     _pilots.erase(std::remove(_pilots.begin(), _pilots.end(), pilot));
     delete pilot;

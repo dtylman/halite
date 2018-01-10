@@ -36,6 +36,10 @@ namespace hlt {
             return { x, y };
         }
         
+        bool equals(const Location& other) const{
+            return (pos_x==other.pos_x) && (pos_y==other.pos_y);
+        }
+        
         bool empty() const {
             return (pos_x<0) && (pos_y<0);
         }
