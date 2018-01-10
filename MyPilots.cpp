@@ -127,10 +127,10 @@ std::vector<hlt::Planet> EntitySorter::planets_by_health(const hlt::Map& map) {
 }
 
 bool MyPilots::entity_targeted(const hlt::Entity& entity) const {
-    for (Pilot* pilot : _pilots) {
+    for (Pilot* pilot : _pilots) {        
         Docker* docker = dynamic_cast<Docker*> (pilot);
         if (docker != NULL) {
-            if (docker->ship().entity_id == entity.entity_id) {
+            if (docker->target_entity_id() == (int)entity.entity_id) {
                 return true;
             }
         }        

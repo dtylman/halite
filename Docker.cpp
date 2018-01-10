@@ -35,10 +35,10 @@ void Docker::play(const hlt::Map& map, hlt::Moves& moves) {
     }
 }
 
-bool Docker::has_target() const {
-    return true;
-}
-
 bool Docker::can_play(const hlt::Map& map) {
     return (_target.owner_id==_ship.owner_id || !_target.owned);
+}
+
+int Docker::target_entity_id() const {
+    return _target.entity_id;
 }

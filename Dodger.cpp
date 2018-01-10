@@ -23,6 +23,6 @@ bool Dodger::can_play(const hlt::Map& map) {
 }
 
 
-bool Dodger::has_target() const {
-    return false;
+int Dodger::target_entity_id() const {
+    return -1;
 }

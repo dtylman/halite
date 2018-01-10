@@ -16,9 +16,8 @@ public:
     Kof(const hlt::Ship& hltShip);    
     virtual ~Kof();
     void play(const hlt::Map& map, hlt::Moves& moves) override;
-    bool can_play(const hlt::Map& map) override;
-
-    bool has_target() const override;
+    bool can_play(const hlt::Map& map) override;    
+    int target_entity_id() const override;
 
 private:
 

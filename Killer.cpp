@@ -37,6 +37,7 @@ bool Killer::can_play(const hlt::Map& map) {
     return true;
 }
 
-bool Killer::has_target() const {
-    return true;
+
+int Killer::target_entity_id() const {
+    return _target.entity_id;
 }

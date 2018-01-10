@@ -104,3 +104,7 @@ void Pilot::move_to_dock(const hlt::Map& map, hlt::Moves& moves) const {
 void Pilot::log(const std::string& message) {
     hlt::Log::output() << typeid(*this).name() << ", ship " << _ship.entity_id << ": " << message << std::endl;
 }
+
+bool Pilot::has_target() const {
+    return (target_entity_id() >= 0);
+}

@@ -11,7 +11,6 @@
 
 Kof::Kof(const hlt::Ship& hltShip) : Pilot(hltShip) {
     log("created");
-
 }
 
 Kof::~Kof() {
@@ -36,6 +35,6 @@ bool Kof::can_play(const hlt::Map& map) {
     return true;
 }
 
-bool Kof::has_target() const {
-    return false;
+int Kof::target_entity_id() const {
+    return -1;
 }

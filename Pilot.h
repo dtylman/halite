@@ -22,8 +22,8 @@ public:
     
     virtual void play(const hlt::Map& map, hlt::Moves& moves) = 0;    
     virtual bool can_play(const hlt::Map& map) =0 ;
-    virtual bool has_target() const = 0;    
-    
+    virtual bool has_target() const;    
+    virtual int target_entity_id() const =0;
     void update_ship(const hlt::Ship& ship);
 protected:
     const hlt::Ship* find_nearest_enemy(const hlt::Map& map) const;
