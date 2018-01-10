@@ -10,11 +10,12 @@
 #include "log.hpp"
 
 Kof::Kof(const hlt::Ship& hltShip) : Pilot(hltShip) {
-    hlt::Log::log("created kof pilot");
+    log("created");
 
 }
 
 Kof::~Kof() {
+    log("destroyed");
 }
 
 void Kof::play(const hlt::Map& map, hlt::Moves& moves) {
@@ -23,4 +24,12 @@ void Kof::play(const hlt::Map& map, hlt::Moves& moves) {
     }
 
     move_to_dock(map, moves);
+}
+
+bool Kof::can_play(const hlt::Map& map) {
+    return true;
+}
+
+bool Kof::has_target() const {
+    return false;
 }

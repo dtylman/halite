@@ -11,17 +11,21 @@
 #include "Pilot.h"
 #include "hlt/hlt.hpp"
 
-class DistanceSorter
+class EntitySorter
 {
 public:
-    DistanceSorter(const hlt::Entity& source);
-    ~DistanceSorter();
+    enum SortType { Distance, Health };
+    EntitySorter(SortType type, const hlt::Entity& source);
+    EntitySorter(SortType type);
+    ~EntitySorter();
     
     bool operator() (const hlt::Entity& target1, const hlt::Entity& target2);
     
-    std::vector<hlt::Planet> planets_by_distance(const hlt::Map& map);
-private:
-    const hlt::Entity& _source;
+    static std::vector<hlt::Planet> planets_by_distance(const hlt::Entity& source,  const hlt::Map& map);
+    static std::vector<hlt::Planet> planets_by_health(const hlt::Map& map);
+private:    
+    SortType _type;
+    hlt::Location _source;
 };
 
 

@@ -84,7 +84,7 @@ namespace hlt {
             const bool avoid_obstacles = true;
             const double angular_step_rad = M_PI / 180.0;
             const Location& target = ship.location.get_closest_point(dock_target.location, dock_target.radius);
-
+            
             return navigate_ship_towards_target(
                     map, ship, target, max_thrust, avoid_obstacles, max_corrections, angular_step_rad);
         }

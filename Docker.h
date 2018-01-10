@@ -17,6 +17,9 @@ public:
     virtual ~Docker();
     
     void play(const hlt::Map& map, hlt::Moves& moves) override;
+    bool can_play(const hlt::Map& map) override;
+
+    bool has_target() const override;
     
 private:
     hlt::Planet _target;

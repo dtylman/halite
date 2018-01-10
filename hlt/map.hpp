@@ -25,5 +25,7 @@ namespace hlt {
         const Planet& get_planet(const EntityId planet_id) const {
             return planets.at(planet_map.at(planet_id));
         }
+        
+        bool entity_exists(EntityId id) const;
     };
 }

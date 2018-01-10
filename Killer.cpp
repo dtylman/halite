@@ -9,7 +9,7 @@
 #include "navigation.hpp"
 #include "log.hpp"
 
-Killer::Killer(const hlt::Ship& hltShip) : Pilot(hltShip) {
+Killer::Killer(const hlt::Ship& ship) : Pilot(ship) {
     hlt::Log::log("created killer pilot");
 }
 
@@ -21,10 +21,18 @@ void Killer::play(const hlt::Map& map, hlt::Moves& moves) {
         return;
     }    
     const hlt::Ship* target = find_nearest_enemy(map);    
-    if (target!=NULL){
-        move_towards(map,target->location,moves);
-        return;
+    if (target!=NULL){        
+//        move_towards(map,target->location,moves);
+//        return;
     } 
     
     move_to_dock(map,moves);
+}
+
+bool Killer::can_play(const hlt::Map& map) {
+    return true;
+}
+
+bool Killer::has_target() const {
+    return false;
 }

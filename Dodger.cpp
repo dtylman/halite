@@ -17,3 +17,12 @@ Dodger::~Dodger() {
 void Dodger::play(const hlt::Map& map, hlt::Moves& moves) {
     
 }
+
+bool Dodger::can_play(const hlt::Map& map) {
+    return false;
+}
+
+
+bool Dodger::has_target() const {
+    return false;
+}

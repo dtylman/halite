@@ -42,20 +42,6 @@
         <in>types.hpp</in>
         <in>util.hpp</in>
       </df>
-      <in>Docker.cpp</in>
-      <in>Docker.h</in>
-      <in>Dodger.cpp</in>
-      <in>Dodger.h</in>
-      <in>Killer.cpp</in>
-      <in>Killer.h</in>
-      <in>Kof.cpp</in>
-      <in>Kof.h</in>
-      <in>MyBot.cpp</in>
-      <in>MyPilots.cpp</in>
-      <in>MyPilots.h</in>
-      <in>Pilot.cpp</in>
-      <in>Pilot.h</in>
-      <in>Vector2.h</in>
     </df>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
