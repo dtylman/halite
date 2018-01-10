@@ -33,7 +33,7 @@ void MyPilots::populate(const hlt::Map& map) {
     //remove all pilots for destroyed ships:
     std::vector<Pilot*> dead;
     for (auto pilot : _pilots) {
-        hlt::Log::output() << " looking for ship " << pilot->ship().entity_id << std::endl;
+        //hlt::Log::output() << " looking for ship " << pilot->ship().entity_id << std::endl;
         if (!map.entity_exists(pilot->ship().entity_id)) {
             dead.push_back(pilot);
         }
@@ -63,12 +63,16 @@ void MyPilots::create_pilot(const hlt::Ship& ship, const hlt::Map& map) {
             return;
         }
     }    
-    // adds killers and kofs
-    if ((rand() % 2) == 0) {
-        _pilots.push_back(new Kof(ship));
-    } else {
-        _pilots.push_back(new Killer(ship));
+    
+    planets = EntitySorter::planets_by_health(map);
+    for (auto planet : planets){
+        if (planet.owner_id!=_metadata.player_id){
+            _pilots.push_back(new Killer(ship,planet));
+            return;
+        }
     }
+    
+    _pilots.push_back(new Kof(ship));    
 }
 
 void MyPilots::play(const hlt::Map& map, hlt::Moves& moves) {

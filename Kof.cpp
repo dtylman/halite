@@ -22,6 +22,12 @@ void Kof::play(const hlt::Map& map, hlt::Moves& moves) {
     if (_ship.in_docking_process()) {
         return;
     }
+        
+//    const hlt::Ship* target = find_nearest_enemy(map);    
+//    if (target!=NULL){        
+//        move_towards(map,target->location,moves);
+//        return;
+//    } 
 
     move_to_dock(map, moves);
 }

@@ -20,7 +20,6 @@ Docker::~Docker() {
 }
 
 void Docker::play(const hlt::Map& map, hlt::Moves& moves) {      
-    log("playing");    
     if (_ship.in_docking_process()){
         return;
     }    

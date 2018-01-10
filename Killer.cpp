@@ -9,24 +9,28 @@
 #include "navigation.hpp"
 #include "log.hpp"
 
-Killer::Killer(const hlt::Ship& ship) : Pilot(ship) {
-    hlt::Log::log("created killer pilot");
+Killer::Killer(const hlt::Ship& ship, const hlt::Entity& target)  : Pilot(ship), _target(target) {
+    hlt::Log::output() << "Killer created, target: " << _target.entity_id << std::endl;
 }
 
 Killer::~Killer() {
+    log("killer destroyed");
 }
 
 void Killer::play(const hlt::Map& map, hlt::Moves& moves) {
     if (_ship.in_docking_process()){
+        moves.push_back(hlt::Move::undock(_ship.entity_id));
         return;
-    }    
-    const hlt::Ship* target = find_nearest_enemy(map);    
-    if (target!=NULL){        
-//        move_towards(map,target->location,moves);
-//        return;
-    } 
-    
-    move_to_dock(map,moves);
+    }        
+    if (!_target.is_alive()){
+        const hlt::Ship* enemy_ship = find_nearest_enemy(map);
+        if (enemy_ship==NULL){
+            moves.push_back(hlt::Move::noop());
+            return;
+        }
+        _target = *enemy_ship;
+    }
+    move_to_crash(map,_target.location,moves);    
 }
 
 bool Killer::can_play(const hlt::Map& map) {
@@ -34,5 +38,5 @@ bool Killer::can_play(const hlt::Map& map) {
 }
 
 bool Killer::has_target() const {
-    return false;
+    return true;
 }

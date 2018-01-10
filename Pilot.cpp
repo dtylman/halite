@@ -37,14 +37,13 @@ const hlt::Ship* Pilot::find_nearest_enemy(const hlt::Map& map) const {
                     double distance = ship.location.get_distance_to(_ship.location);
                     if (lowest_distance > distance) {
                         lowest_distance = distance;
-                        nearest_ship = &ship;
-                        hlt::Log::output() << "killer " << _ship.entity_id << " found enemy " << nearest_ship->entity_id << " distance: " << distance << std::endl;
+                        nearest_ship = &ship;                        
                     }
                 }
             }
         }
     }
-    hlt::Log::output() << "nearest enemy " << nearest_ship->entity_id << " distance " << lowest_distance << std::endl;
+   // hlt::Log::output() << "nearest enemy " << nearest_ship->entity_id << " distance " << lowest_distance << std::endl;
     return nearest_ship;
 }
 
@@ -61,8 +60,19 @@ const hlt::Planet* Pilot::find_nearest_planet(const hlt::Map& map, bool owned) c
             nearest_planet = &planet;
         }        
     }
-    hlt::Log::output() << "nearest planet " << nearest_planet->entity_id << " distance " << nearest_distance << std::endl;
+   // hlt::Log::output() << "nearest planet " << nearest_planet->entity_id << " distance " << nearest_distance << std::endl;
     return nearest_planet;
+}
+
+void Pilot::move_to_crash(const hlt::Map& map, const hlt::Location& location, hlt::Moves& moves) const {
+     const hlt::possibly<hlt::Move> move = hlt::navigation::navigate_ship_towards_target(map,
+            _ship,location,hlt::constants::MAX_SPEED,true,
+            hlt::constants::MAX_NAVIGATION_CORRECTIONS,M_PI / 180.0);
+     if (move.second){
+         moves.push_back(move.first);
+     }
+     //stop 
+    moves.push_back(hlt::Move::noop());
 }
 
 void Pilot::move_to_dock(const hlt::Map& map, hlt::Moves& moves) const {
