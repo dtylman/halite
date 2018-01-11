@@ -8,11 +8,12 @@
 #include "Dodger.h"
 
 Dodger::Dodger(const hlt::Ship& ship) : Pilot(ship){
-    log("Dodger");
+    log("created dodger");
+    _idle = false;
 }
 
 Dodger::~Dodger() {
-    log("Dodger died");
+    log("dodger died");
 }
 
 void Dodger::play(const hlt::Map& map, hlt::Moves& moves) {

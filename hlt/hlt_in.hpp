@@ -4,12 +4,13 @@
 #include <iostream>
 
 #include "map.hpp"
+#include "log.hpp"
 
 namespace hlt {
     namespace in {
         static std::string get_string() {
             std::string result;
-            std::getline(std::cin, result);
+            std::getline(std::cin, result);            
             return result;
         }
 

@@ -16,13 +16,10 @@ namespace hlt {
         std::vector<Planet> planets;
         entity_map<unsigned int> planet_map;
 
-        Map(int width, int height);
-
-        const Ship& get_ship(const PlayerId player_id, const EntityId ship_id) const;
-
-        const Planet& get_planet(const EntityId planet_id) const;
+        Map(int width, int height);              
         
         bool entity_exists(EntityId id) const;
         bool get_ship_by_id(const EntityId ship_id, Ship& ship) const;
+        bool get_planet_by_id(const EntityId planet_id, Planet& planet) const;
      };
 }

@@ -14,6 +14,8 @@
 #include "Killer.h"
 #include "Dodger.h"
 
+#define MAX_EXPECTED_PLANET_RADIUS 100
+
 MyPilots* MyPilots::_instance = NULL;
 
 MyPilots::MyPilots(const hlt::Metadata& metadata) : _metadata(metadata) {
@@ -105,9 +107,11 @@ void MyPilots::create_pilot(const hlt::Ship& ship, const hlt::Map& map) {
     if (create_docker_pilot(ship, map)) {
         return;
     }
+
     if (create_dodger_pilot(ship, map)) {
         return;
     }
+
     if (create_killer_pilot(ship, map)) {
         return;
     }
@@ -121,9 +125,12 @@ void MyPilots::play(const hlt::Map& map, hlt::Moves& moves) {
     }
 }
 
-hlt::possibly<hlt::Planet> MyPilots::best_enemry_planet(const hlt::Map& map) {
-    std::vector<hlt::Planet> planets = EntitySorter::planets_by_radius(map);
-    for (auto planet : planets) {
+hlt::possibly<hlt::Planet> MyPilots::best_enemy_planet(const hlt::Map& map, const hlt::Ship& for_ship) {
+    std::vector<hlt::Planet> planets = EntitySorter::planets_by_best_to_attack(for_ship,map);    
+    for (auto planet : planets) {        
+        if (!planet.owned){ 
+            return {planet, true};
+        }
         if ((planet.owned) && (planet.owner_id != _metadata.player_id)) { //not my planet 
             return {planet, true};
         }
@@ -138,11 +145,14 @@ void MyPilots::analyze_turn(const hlt::Map& map) {
             idle_pilots.push_back(pilot);
         }
     }
-    hlt::possibly<hlt::Planet> planet = best_enemry_planet(map);
-    if (planet.second) {
-        for (auto pilot : idle_pilots) {
+    hlt::Log::output() << "found " << idle_pilots.size() << " pilots who can't play" << std::endl;
+
+    for (auto pilot : idle_pilots) {
+        hlt::possibly<hlt::Planet> planet = best_enemy_planet(map,pilot->ship());
+        if (planet.second) {
+            hlt::Log::output() << "found planet to attack " << planet.first.entity_id << std::endl;
             _pilots.push_back(new Docker(pilot->ship(), planet.first));
-            delete_pilot(pilot);            
+            delete_pilot(pilot);
         }
     }
 }
@@ -163,18 +173,33 @@ EntitySorter::EntitySorter(SortType type, const hlt::Entity& source) : _type(typ
     _source = source.location;
 }
 
-bool EntitySorter::operator()(const hlt::Entity& entity1, const hlt::Entity& entitiy2) {
+bool EntitySorter::operator()(const hlt::Entity& entity1, const hlt::Entity& entity2) {
     if (_type == DistanceASC) {
         double distance1 = entity1.location.get_distance_to(_source);
-        double distance2 = entitiy2.location.get_distance_to(_source);
+        double distance2 = entity2.location.get_distance_to(_source);
         return distance1<distance2;
     } else if (_type == HealthASC) {
-        return entity1.health < entitiy2.health;
+        return entity1.health < entity2.health;
     } else if (_type == RadiusDSC) {
-        return entity1.radius > entitiy2.radius;
+        return entity1.radius > entity2.radius;
+    } else if (_type == BestToAttack) {
+        const hlt::Planet* planet1 = dynamic_cast<const hlt::Planet*> (&entity1);
+        const hlt::Planet* planet2 = dynamic_cast<const hlt::Planet*> (&entity2);
+        double distance1 = entity1.location.get_distance_to(_source);
+        double distance2 = entity2.location.get_distance_to(_source);
+        if ((planet1 == NULL) || (planet2 == NULL)) {
+            hlt::Log::log("Planets are NULL!");
+            return distance1<distance2;
+        }
+        double score1 = distance1 * planet1->docked_ships.size() * (MAX_EXPECTED_PLANET_RADIUS - planet1->radius);
+        double score2 = distance2 * planet2->docked_ships.size() * (MAX_EXPECTED_PLANET_RADIUS - planet2->radius);
+        hlt::Log::output() << "planet " << planet1->entity_id << " score1 " << score1 << " distance1 " << distance1 << " ships: " <<planet1->docked_ships.size() << " radius: " << (MAX_EXPECTED_PLANET_RADIUS - planet1->radius) << std::endl;
+        hlt::Log::output() << "planet " << planet1->entity_id << " score2 " << score2 << " distance2 " << distance2 << " ships: " <<planet2->docked_ships.size() << " radius: " << (MAX_EXPECTED_PLANET_RADIUS - planet2->radius) << std::endl;        
+        return score1<score2;
+
     } else {
         hlt::Log::log("Warning!! sorting by unknown type!!!");
-        return entity1.radius < entitiy2.radius;
+        return entity1.radius < entity2.radius;
     }
 }
 
@@ -185,6 +210,12 @@ EntitySorter::~EntitySorter() {
 std::vector<hlt::Planet> EntitySorter::planets_by_distance(const hlt::Entity& source, const hlt::Map& map) {
     std::vector<hlt::Planet> planets = map.planets;
     std::sort(planets.begin(), planets.end(), EntitySorter(SortType::DistanceASC, source));
+    return planets;
+}
+
+std::vector<hlt::Planet> EntitySorter::planets_by_best_to_attack(const hlt::Entity& source, const hlt::Map& map) {
+    std::vector<hlt::Planet> planets = map.planets;
+    std::sort(planets.begin(), planets.end(), EntitySorter(SortType::BestToAttack, source));
     return planets;
 }
 

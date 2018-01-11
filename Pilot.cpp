@@ -70,6 +70,7 @@ void Pilot::move_to(const hlt::Map& map, const hlt::Location& location, hlt::Mov
             hlt::constants::MAX_NAVIGATION_CORRECTIONS,M_PI / 180.0);
      if (move.second){
          moves.push_back(move.first);
+         return;
      }
      //stop 
      stop_moving(moves);
@@ -104,7 +105,7 @@ void Pilot::log(const std::string& message) {
     hlt::Log::output() << typeid(*this).name() << ", ship " << _ship.entity_id << ": " << message << std::endl;
 }
 
-bool Pilot::idle() const {
+bool Pilot::idle() const {  
     return _idle;
 }
 

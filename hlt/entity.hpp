@@ -5,6 +5,7 @@
 
 namespace hlt {
     struct Entity {
+        virtual ~Entity() = default;
         EntityId entity_id;
         PlayerId owner_id;
         Location location;

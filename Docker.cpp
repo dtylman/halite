@@ -23,10 +23,10 @@ void Docker::play(const hlt::Map& map, hlt::Moves& moves) {
     if (_ship.in_docking_process()) {
         return;
     }
-
+    
     // if some other ship is docking, kill it!
-    if (_target.owned && _target.owner_id != _ship.owner_id) { //not mine
-        std::vector<hlt::EntityId> docked_ships = map.get_planet(_target.entity_id).docked_ships;
+    if ((_target.owned) && (_target.owner_id != _ship.owner_id)) { //not mine                
+        std::vector<hlt::EntityId> docked_ships = _target.docked_ships;
         for (auto ship_id : docked_ships) {
             hlt::Ship enemy_ship;
             if (map.get_ship_by_id(ship_id, enemy_ship)) {

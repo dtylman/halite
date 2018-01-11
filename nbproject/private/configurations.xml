@@ -19,8 +19,6 @@
           <df name="hlt">
           </df>
         </df>
-        <df name="Progress">
-        </df>
         <in>feature_tests.c</in>
         <in>feature_tests.cxx</in>
       </df>
@@ -88,7 +86,6 @@
         </gdb_signals>
         <gdb_options>
           <DebugOptions>
-            <option name="debug_command" value="./MyBot"/>
           </DebugOptions>
         </gdb_options>
         <gdb_buildfirst gdb_buildfirst_overriden="false" gdb_buildfirst_old="false"/>
