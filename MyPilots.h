@@ -14,7 +14,7 @@
 class EntitySorter {
 public:
     enum SortType {
-        DistanceASC, HealthASC, RadiusDSC, BestToAttack
+        DistanceASC, BestToKill, RadiusDSC, BestToAttack
     };
     EntitySorter(SortType type, const hlt::Entity& source);
     EntitySorter(SortType type);
@@ -25,7 +25,7 @@ public:
     
     static std::vector<hlt::Planet> planets_by_distance(const hlt::Entity& source, const hlt::Map& map);    
     static std::vector<hlt::Planet> planets_by_best_to_attack(const hlt::Entity& source, const hlt::Map& map);
-    static std::vector<hlt::Planet> planets_by_health(const hlt::Map& map);
+    static std::vector<hlt::Planet> planets_by_best_to_kill(const hlt::Map& map);
     static std::vector<hlt::Planet> planets_by_radius(const hlt::Map& map);
 private:
     SortType _type;

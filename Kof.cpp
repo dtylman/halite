@@ -18,15 +18,10 @@ Kof::~Kof() {
 }
 
 void Kof::play(const hlt::Map& map, hlt::Moves& moves) {
-    if (_ship.in_docking_process()) {
-        hlt::Planet planet;
-        if (map.get_planet_by_id(_ship.docked_planet, planet)) {
-            if (planet.is_full()) {
-                moves.push_back(hlt::Move::undock(_ship.entity_id));
-                return;
-            }
-        }
+   if (_ship.docking_status == hlt::ShipDockingStatus::Docking){
+        return;
     }
+   
     //try to dock nearest planet.
     if (move_to_dock(map, moves)) {
         return;
@@ -39,7 +34,9 @@ void Kof::play(const hlt::Map& map, hlt::Moves& moves) {
         move_to(map, near_enemy_ship, moves);
         return;
     }
-    stop_moving(moves);
+    if ((map.count_docking_ships(_ship.owner_id,_ship.docked_planet))>2){
+        set_idle(moves);
+    }                   
 }
 
 int Kof::target_entity_id() const {

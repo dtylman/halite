@@ -20,10 +20,10 @@ Docker::~Docker() {
 }
 
 void Docker::play(const hlt::Map& map, hlt::Moves& moves) {
-    if (_ship.in_docking_process()) {
+    if (_ship.docking_status == hlt::ShipDockingStatus::Docking){
         return;
     }
-    
+        
     // if some other ship is docking, kill it!
     if ((_target.owned) && (_target.owner_id != _ship.owner_id)) { //not mine                
         std::vector<hlt::EntityId> docked_ships = _target.docked_ships;
@@ -47,7 +47,9 @@ void Docker::play(const hlt::Map& map, hlt::Moves& moves) {
         moves.push_back(move.first);
         return;
     }
-    stop_moving(moves);
+    if ((map.count_docking_ships(_ship.owner_id,_ship.docked_planet))>2){
+        set_idle(moves);
+    }               
 }
 
 //bool Docker::can_play(const hlt::Map& map) {

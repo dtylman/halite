@@ -22,7 +22,7 @@ void Dodger::play(const hlt::Map& map, hlt::Moves& moves) {
         move_to(map,dodgepoint,moves);
         return;
     }
-    stop_moving(moves,false);
+    set_idle(moves,false);
 }
 
 

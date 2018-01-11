@@ -26,8 +26,8 @@ bool Map::entity_exists(EntityId id) const {
 }
 
 bool Map::get_planet_by_id(const EntityId planet_id, Planet& planet) const {
-    for (auto p : planets){
-        if (p.entity_id==planet_id){
+    for (auto p : planets) {
+        if (p.entity_id == planet_id) {
             planet = p;
             return true;
         }
@@ -47,3 +47,14 @@ bool Map::get_ship_by_id(const EntityId ship_id, Ship& ship) const {
     return false;
 }
 
+size_t Map::count_docking_ships(const PlayerId player_id, const EntityId planet_id) const {
+    size_t count = 0;
+    for (auto sc : ships) {
+        for (auto s : sc.second) {
+            if ((s.owner_id == player_id) && (s.docked_planet == planet_id)) {
+                count++;
+            }
+        }
+    }
+    return count;
+}

@@ -73,7 +73,7 @@ void Pilot::move_to(const hlt::Map& map, const hlt::Location& location, hlt::Mov
          return;
      }
      //stop 
-     stop_moving(moves);
+     set_idle(moves);
 }
 
 bool Pilot::move_to_dock(const hlt::Map& map, hlt::Moves& moves)  {
@@ -109,7 +109,7 @@ bool Pilot::idle() const {
     return _idle;
 }
 
-void Pilot::stop_moving(hlt::Moves& moves, bool set_idle) {
+void Pilot::set_idle(hlt::Moves& moves, bool set_idle) {
     moves.push_back(hlt::Move::noop());
     _idle = set_idle;
 }

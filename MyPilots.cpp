@@ -90,10 +90,10 @@ bool MyPilots::create_dodger_pilot(const hlt::Ship& ship, const hlt::Map& map) {
 }
 
 bool MyPilots::create_killer_pilot(const hlt::Ship& ship, const hlt::Map& map) {
-    if (count_pilots<Killer>() > map.planets.size() * 2) {
-        return false;
-    }
-    std::vector<hlt::Planet> planets = EntitySorter::planets_by_health(map);
+//    if (count_pilots<Killer>() > map.planets.size() * 2) {
+//        return false;
+//    }
+    std::vector<hlt::Planet> planets = EntitySorter::planets_by_best_to_kill(map);
     for (auto planet : planets) {
         if (planet.owner_id != _metadata.player_id) {
             _pilots.push_back(new Killer(ship, planet));
@@ -112,11 +112,12 @@ void MyPilots::create_pilot(const hlt::Ship& ship, const hlt::Map& map) {
         return;
     }
 
-    if (create_killer_pilot(ship, map)) {
-        return;
+    if (rand() % 2 == 0) {
+        create_killer_pilot(ship, map);
+    } else {
+        // default: create kof pilot
+        _pilots.push_back(new Kof(ship));
     }
-    // default: create kof pilot
-    _pilots.push_back(new Kof(ship));
 }
 
 void MyPilots::play(const hlt::Map& map, hlt::Moves& moves) {
@@ -126,9 +127,9 @@ void MyPilots::play(const hlt::Map& map, hlt::Moves& moves) {
 }
 
 hlt::possibly<hlt::Planet> MyPilots::best_enemy_planet(const hlt::Map& map, const hlt::Ship& for_ship) {
-    std::vector<hlt::Planet> planets = EntitySorter::planets_by_best_to_attack(for_ship,map);    
-    for (auto planet : planets) {        
-        if (!planet.owned){ 
+    std::vector<hlt::Planet> planets = EntitySorter::planets_by_best_to_attack(for_ship, map);
+    for (auto planet : planets) {
+        if (!planet.owned) {
             return {planet, true};
         }
         if ((planet.owned) && (planet.owner_id != _metadata.player_id)) { //not my planet 
@@ -148,7 +149,7 @@ void MyPilots::analyze_turn(const hlt::Map& map) {
     hlt::Log::output() << "found " << idle_pilots.size() << " pilots who can't play" << std::endl;
 
     for (auto pilot : idle_pilots) {
-        hlt::possibly<hlt::Planet> planet = best_enemy_planet(map,pilot->ship());
+        hlt::possibly<hlt::Planet> planet = best_enemy_planet(map, pilot->ship());
         if (planet.second) {
             hlt::Log::output() << "found planet to attack " << planet.first.entity_id << std::endl;
             _pilots.push_back(new Docker(pilot->ship(), planet.first));
@@ -178,23 +179,25 @@ bool EntitySorter::operator()(const hlt::Entity& entity1, const hlt::Entity& ent
         double distance1 = entity1.location.get_distance_to(_source);
         double distance2 = entity2.location.get_distance_to(_source);
         return distance1<distance2;
-    } else if (_type == HealthASC) {
-        return entity1.health < entity2.health;
+    } else if (_type == BestToKill) {
+        double score1 = entity1.radius * (255 - entity1.health);
+        double score2 = entity2.radius * (255 - entity2.health);
+        return score1>score2;
     } else if (_type == RadiusDSC) {
         return entity1.radius > entity2.radius;
     } else if (_type == BestToAttack) {
-        const hlt::Planet* planet1 = dynamic_cast<const hlt::Planet*> (&entity1);
-        const hlt::Planet* planet2 = dynamic_cast<const hlt::Planet*> (&entity2);
         double distance1 = entity1.location.get_distance_to(_source);
         double distance2 = entity2.location.get_distance_to(_source);
+        const hlt::Planet* planet1 = dynamic_cast<const hlt::Planet*> (&entity1);
+        const hlt::Planet* planet2 = dynamic_cast<const hlt::Planet*> (&entity2);
         if ((planet1 == NULL) || (planet2 == NULL)) {
             hlt::Log::log("Planets are NULL!");
             return distance1<distance2;
         }
         double score1 = distance1 * planet1->docked_ships.size() * (MAX_EXPECTED_PLANET_RADIUS - planet1->radius);
         double score2 = distance2 * planet2->docked_ships.size() * (MAX_EXPECTED_PLANET_RADIUS - planet2->radius);
-        hlt::Log::output() << "planet " << planet1->entity_id << " score1 " << score1 << " distance1 " << distance1 << " ships: " <<planet1->docked_ships.size() << " radius: " << (MAX_EXPECTED_PLANET_RADIUS - planet1->radius) << std::endl;
-        hlt::Log::output() << "planet " << planet1->entity_id << " score2 " << score2 << " distance2 " << distance2 << " ships: " <<planet2->docked_ships.size() << " radius: " << (MAX_EXPECTED_PLANET_RADIUS - planet2->radius) << std::endl;        
+        hlt::Log::output() << "planet " << planet1->entity_id << " score1 " << score1 << " distance1 " << distance1 << " ships: " << planet1->docked_ships.size() << " radius: " << (MAX_EXPECTED_PLANET_RADIUS - planet1->radius) << std::endl;
+        hlt::Log::output() << "planet " << planet1->entity_id << " score2 " << score2 << " distance2 " << distance2 << " ships: " << planet2->docked_ships.size() << " radius: " << (MAX_EXPECTED_PLANET_RADIUS - planet2->radius) << std::endl;
         return score1<score2;
 
     } else {
@@ -219,9 +222,9 @@ std::vector<hlt::Planet> EntitySorter::planets_by_best_to_attack(const hlt::Enti
     return planets;
 }
 
-std::vector<hlt::Planet> EntitySorter::planets_by_health(const hlt::Map& map) {
+std::vector<hlt::Planet> EntitySorter::planets_by_best_to_kill(const hlt::Map& map) {
     std::vector<hlt::Planet> planets = map.planets;
-    std::sort(planets.begin(), planets.end(), EntitySorter(SortType::HealthASC));
+    std::sort(planets.begin(), planets.end(), EntitySorter(SortType::BestToKill));
     return planets;
 }
 

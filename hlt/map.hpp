@@ -21,5 +21,7 @@ namespace hlt {
         bool entity_exists(EntityId id) const;
         bool get_ship_by_id(const EntityId ship_id, Ship& ship) const;
         bool get_planet_by_id(const EntityId planet_id, Planet& planet) const;
+        
+        size_t count_docking_ships(const PlayerId player_id, const EntityId planet_id) const;
      };
 }

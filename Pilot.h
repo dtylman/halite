@@ -29,7 +29,7 @@ protected:
     const hlt::Planet* find_nearest_planet(const hlt::Map& map, bool owned) const;    
     void move_to(const hlt::Map& map, const hlt::Location& location, hlt::Moves& moves) ;
     bool move_to_dock(const hlt::Map& map, hlt::Moves& moves) ;    
-    void stop_moving(hlt::Moves& moves, bool set_idle = true);
+    void set_idle(hlt::Moves& moves, bool set_idle = true);
     void log(const std::string& message);
     hlt::Ship _ship;       
     bool _idle;
