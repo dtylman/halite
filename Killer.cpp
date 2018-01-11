@@ -22,14 +22,14 @@ void Killer::play(const hlt::Map& map, hlt::Moves& moves) {
         moves.push_back(hlt::Move::undock(_ship.entity_id));
         return;
     }        
-    if (!_target.is_alive()){
+    if (!_target.is_alive() || (_target.owner_id=_ship.owner_id)){ //don't kill my planets!!
         const hlt::Ship* enemy_ship = find_nearest_enemy(map);
         if (enemy_ship==NULL){
             set_idle(moves);
             return;
         }
         _target = *enemy_ship;
-    }
+    }    
     move_to(map,_target.location,moves);    
 }
 
